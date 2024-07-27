@@ -1,0 +1,90 @@
+#include "../include/Game.hpp"
+#include <unistd.h>
+#include <stdlib.h>
+
+void Game::initGrid() {
+
+    std::vector<std::vector<int>> grid_template = 
+    {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
+      {0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    };
+
+    std::swap(grid, grid_template);
+}
+
+int Game::countNeighboursNum(int row, int col) {
+  int neighbours_num = 0;
+  if (row+1 < grid.size() && grid[row+1][col] == 1)
+    neighbours_num++; 
+  if (row-1 >= 0 && grid[row-1][col] == 1)
+    neighbours_num++;
+  if (col+1 < grid.size() && grid[row][col+1] == 1)
+    neighbours_num++;
+  if (col-1 >= 0 && grid[row][col-1] == 1)
+    neighbours_num++;
+  /*
+  if (row+1 < grid.size() && col+1 < grid.size() && grid[row+1][col+1] == 1)
+    neighbours_num++;
+  if (row-1 >= 0 && col-1 >= 0 && grid[row-1][col-1] == 1)
+    neighbours_num++;
+  if (row+1 < grid.size() && col-1 >= 0 && grid[row+1][col-1] == 1)
+    neighbours_num++;
+  if (row-1 >= 0 && col+1 < grid.size() && grid[row-1][col+1] == 1)
+    neighbours_num++;
+    */
+
+  return neighbours_num;
+}
+
+void Game::gameLoop() {
+
+  while(isGameRunning) {
+    isCellChanged = false;
+    isGenDead = true;
+    gen_num++;
+    printGen();
+    std::cout << std::endl;
+    for (int row = 0; row < grid.size(); row++) {
+      for (int col = 0; col < grid[0].size(); col++) {
+        int neighbours_num = countNeighboursNum(row, col);
+        std::cout << neighbours_num;
+
+        if (grid[row][col])
+          isGenDead = false;
+        if (grid[row][col] && (neighbours_num != 2 || neighbours_num != 3)) {
+          isCellChanged = true;
+          grid[row][col] = 0;
+        }
+        if (!grid[row][col] && neighbours_num == 3) {
+          isCellChanged = true;
+          grid[row][col] = 1;
+        }
+      }
+      std::cout << std::endl;
+    }
+    if (isGenDead || !isCellChanged)
+      break;
+    sleep(2);
+    std::cout << std::endl;
+  }
+}
+
+void Game::printGen() {
+  //system("clear");
+  std::cout << "Gen " << gen_num << std::endl;
+    for (int row = 0; row < grid.size(); row++) {
+      for (int col = 0; col < grid[0].size(); col++) {
+        std::cout << grid[row][col];
+      }
+      std::cout << std::endl;
+    }
+}
+
