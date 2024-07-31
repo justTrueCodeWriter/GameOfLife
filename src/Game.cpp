@@ -1,6 +1,7 @@
 #include "../include/Game.hpp"
 #include <unistd.h>
 #include <stdlib.h>
+#include <string>
 
 void Game::initGrid() {
 
@@ -10,16 +11,16 @@ void Game::initGrid() {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {0, 0, 1, 1, 1, 1, 1, 0, 0, 0},
+      {0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
       {0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
       {0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+      {0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
+      {0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -41,13 +42,23 @@ int Game::countNeighboursNum(int row, int col) {
 }
 
 void Game::gameLoop() {
+  int scr_row, scr_col;
+
+  setlocale(LC_ALL, "");
+  initscr();
+  getmaxyx(stdscr, scr_row, scr_col);
 
   while(isGameRunning) {
     std::vector<std::vector<int>> grid_copy = grid;
     isCellChanged = false;
     isGenDead = true;
+
     gen_num++;
+    
+    clear();
+    move(scr_row / 4, scr_col);
     printGen();
+    refresh();
     //std::cout << std::endl;
     for (int row = 0; row < grid.size(); row++) {
       for (int col = 0; col < grid[0].size(); col++) {
@@ -74,19 +85,24 @@ void Game::gameLoop() {
       isGameRunning = false;
     sleep(1);
   }
+  endwin();
 }
 
 void Game::printGen() {
-  system("clear");
-  std::cout << "Gen " << gen_num << std::endl;
+  //system("clear");
+  //std::cout << "Gen " << gen_num << std::endl;
+  printw("Gen %d\n", gen_num);
     for (int row = 0; row < grid.size(); row++) {
       for (int col = 0; col < grid[0].size(); col++) {
         if (grid[row][col] == 1)
-          std::cout << "■ ";
+          //std::cout << "■ ";
+          printw("■ ");
         else
-          std::cout << "☐ ";
+          //std::cout << "☐ ";
+          printw("☐ ");
       }
-      std::cout << std::endl;
+      //std::cout << std::endl;
+      printw("\n");
     }
 }
 

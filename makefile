@@ -4,13 +4,13 @@ COMPILER = g++
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
 INC_PATH = ./include/
-#SFML_LIBS := -lsfml-window -lsfml-system -lsfml-graphics -lsfml-audio
+LIBS = -lncursesw
 
 SRC = $(wildcard $(SRC_PATH)*.cpp)
 OBJ = $(patsubst $(SRC_PATH)%.cpp, $(OBJ_PATH)%.o, $(SRC))
 
 $(TARGET): $(OBJ)
-	$(COMPILER) $(OBJ) -o $(TARGET) $(SFML_LIBS)
+	$(COMPILER) $(OBJ) -o $(TARGET) $(LIBS)
 
 $(OBJ_PATH)%.o : $(SRC_PATH)%.cpp
 	$(COMPILER) -c $< -o $@
